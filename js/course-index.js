@@ -51,7 +51,6 @@ $(function () {
                 var video = player[0];
                 $(window).on("scroll", function() {
                     if($(window).scrollTop() > 250){
-                        console.log(123456)
                         if(!requestPictureInPictureLoading){
                             try {
                                 if (video !== document.pictureInPictureElement) {
@@ -164,7 +163,7 @@ $(function () {
             return false;
         } else {
             $(window).off("scroll");
-            document.exitPictureInPicture();
+            document.pictureInPictureElement && document.exitPictureInPicture();
             modiaOrder = _this.index();
             $("#mediaSrc").attr("src", mediaUrl);
 
