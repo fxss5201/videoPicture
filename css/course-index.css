@@ -42,6 +42,7 @@ body {
     z-index: 100;
     width: 100%;
     height: 100%;
+    font-size: 0;
 }
 
 .container {
@@ -161,7 +162,7 @@ body {
     box-sizing: border-box;
     width: 100%;
     text-align: center;
-    height: 0.88rem;
+    height: 0.96rem;
     border-top: 1px solid #ddd;
 }
 
@@ -169,7 +170,7 @@ body {
     display: block;
     width: 100%;
     height: 100%;
-    line-height: 0.88rem;
+    line-height: 0.96rem;
     font-size: 0.28rem;
     color: #fff;
     text-decoration: none;
@@ -342,4 +343,11 @@ body {
     bottom: 0;
     width: 100%;
     z-index: 100;
+    font-size: 0;
+}
+.no-support-tip {
+    font-size: 16px;
+    line-height: 38px;
+    color: #fff;
+    background: rgba(0, 0, 0, .8);
 }

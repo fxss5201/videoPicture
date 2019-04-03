@@ -11,6 +11,9 @@ $(function () {
     // 媒体对象的实例化对象
     var player;
 
+    // 画中画
+    var requestPictureInPictureLoading = false;
+
     // 图文详情、课程目录的点击事件
     $("#containerNav").on("click", "li", function() {
         var _this = $(this);
@@ -41,8 +44,31 @@ $(function () {
                 $("#mediaCatalog li").eq(modiaOrder).addClass("media-noActive");
             });
             $("#mediaSrc").on("error", function(){
-                layer.open({ content: '视频加载失败', skin: 'msg', time: 2 });
+                layer.open({ content: '视频加载失败，您可以查看图文详情。', skin: 'msg', time: 2 });
             });
+
+            if(!OS.phone){
+                var video = player[0];
+                $(window).on("scroll", function() {
+                    if($(window).scrollTop() > 250){
+                        console.log(123456)
+                        if(!requestPictureInPictureLoading){
+                            try {
+                                if (video !== document.pictureInPictureElement) {
+                                    // 尝试进入画中画模式
+                                    video.requestPictureInPicture();
+                                    requestPictureInPictureLoading = true;
+                                }
+                            } catch(error) {
+                                log('出错了！' + error);
+                            }
+                        }
+                    }
+                });
+                video.addEventListener('enterpictureinpicture', function(event) {
+                    requestPictureInPictureLoading = false;
+                });
+            }
         } else {
             var getTpl = $("#audioTpl").html();
             laytpl(getTpl).render(nowMedia, function(html) {
@@ -58,9 +84,10 @@ $(function () {
                 audioPause();
             }).on("ended", function() {
                 $("#mediaCatalog li").eq(modiaOrder).addClass("media-noActive");
-            }).on("error", function() {
-                $(".audio-error").text("音频加载失败，您可以查看图文详情。").show();
-                });
+            });
+            $("#mediaSrc").on("error", function(){
+                layer.open({ content: '音频加载失败，您可以查看图文详情。', skin: 'msg', time: 2 });
+            });
             player[0].onwaiting = function () {
                 $(".audio-mask-loading").show();
             };
@@ -136,6 +163,8 @@ $(function () {
         if (courseId == nowCourseId) {
             return false;
         } else {
+            $(window).off("scroll");
+            document.exitPictureInPicture();
             modiaOrder = _this.index();
             $("#mediaSrc").attr("src", mediaUrl);
 
@@ -194,87 +223,5 @@ $(function () {
         );
     } else {
         $("#openInApp").attr("href", "http://mo.fooww.com/");
-        // 由于微信浏览器屏蔽了Scheme跳转，所以只能去浏览器中打开
-        // ios版的QQ也不支持
-        // var ua = navigator.userAgent.toLowerCase();
-        // var isWeixin = ua.indexOf('micromessenger') != -1;
-        // var isQQ = ua.indexOf('qq') != -1;
-        // if (isWeixin) {
-        //     $("#openInApp").on("click", function () {
-        //         $("#promptMask").show();
-        //     });
-        //     $("#promptMask").on("click", function () {
-        //         $(this).hide();
-        //     });
-        // } else if ((window.OS.ipad || window.OS.iphone) && isQQ) {
-        //     $("#openInApp").on("click", function () {
-        //         $("#promptMask").show();
-        //     });
-        //     $("#promptMask").on("click", function () {
-        //         $(this).hide();
-        //     });
-        // } else {
-        //     $("#openInApp").on("click", function() {
-        //         openApp("fanxun://collegevideo?courseid=" + $("#mediaCatalog li.media-active").attr("data-id"), "http://a.app.qq.com/o/simple.jsp?pkgname=com.fooww.soft.android.Presentation");
-        //     });
-        // }
     }
-
-    // /**
-    //  * 打开APP
-    //  * @param {*} url 跳转的scheme地址
-    //  * @param {*} downloadUrl 应用下载地址
-    //  */
-    // function openApp(url, downloadUrl) {
-    //     if (window.OS.ipad || window.OS.iphone) {
-    //         // 外部一个定时器,专门盯着启动app的定时器openAppLoop;就叫它killer吧  
-    //         // 计时4秒,之后干掉openAppLoop.  
-    //         window.setTimeout(function() {
-    //             clearTimeout(openAppLoop);
-    //             openAppTime = parseInt('4000') / 1000;
-    //         }, 4000);
-    //         // 尝试启动应用  
-    //         location.href = url;
-    //         // 同时开始应用启动倒计时  
-    //         countDown(downloadUrl);
-    //     } else {
-    //         // 安卓的就是用iframe来测试是否安装和启动应用了  
-    //         window.setTimeout(function() {
-    //             clearTimeout(openAppLoop);
-    //             openAppTime = parseInt('4000') / 1000;
-    //         }, 4000);
-    //         // 创建iframe并启动应用入口
-    //         androidOpenApp(url, downloadUrl);
-    //     }
-    // }
-
-    // function androidOpenApp(src, downloadUrl) {
-    //     // 通过iframe的方式试图打开APP，如果能正常打开，会直接切换到APP  
-    //     var ifr = document.createElement('iframe');
-    //     ifr.src = src;
-    //     ifr.style.display = 'none';
-    //     document.body.appendChild(ifr);
-    //     // 切换到iframe时  
-    //     // 此时,会有个问题,如后切换到应用时间小于killer所需要杀死openAppLoop的时间,openAppLoop就会跳到下载提示,killer`就失去作用了  
-    //     countDown(downloadUrl);
-    //     window.setTimeout(function() {
-    //         document.body.removeChild(ifr);
-    //     }, 3000);
-    //     // 倒计时  
-    // }
-
-    // function countDown(downloadUrl) {
-    //     //每秒调用一次  
-    //     openAppLoop = window.setTimeout(function() { countDown(downloadUrl); }, 1000);
-    //     if (openAppTime > 0) {
-    //         openAppTime--;
-    //         if (openAppTime == 0) {
-    //             //如果计时到0,openAppLoop任然没被干掉,就说明应用没有启动,此时,跳到下载提示界面  
-    //             //定时器的局限性还是很大,不能响应式反应,所以只能做到这一步了  
-    //             clearTimeout(openAppLoop);
-    //             openAppTime = parseInt('4000') / 1000;
-    //             location.href = downloadUrl;
-    //         }
-    //     }
-    // }
 })
