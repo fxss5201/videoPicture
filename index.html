@@ -469,7 +469,7 @@
     <script id="videoTpl" type="text/html">
         <!-- playsinline webkit-playsinline: ios下的局域播放 -->
         <!-- x5-playsinline="true": 安卓下微信、QQ的局域播放 -->
-        <video id="video" controls class="player" playsinline webkit-playsinline x5-playsinline="true" style="width: 100%; height: 100%;" poster="{{ d.poster }}" preload="auto" title="{{ d.title }}">
+        <video id="video" controls class="player" playsinline webkit-playsinline x5-playsinline="true" style="width: 100%; height: 100%;" poster="{{ d.poster }}" preload="auto" title="{{ d.title }}" controlslist="nodownload">
             <source id="mediaSrc" data-id="{{ d.courseId }}" src="{{ d.src }}" type="video/mp4">
             <p class="no-support-tip">您的浏览器不支持 video 标签。</p>
         </video>
@@ -481,7 +481,7 @@
             <img class="audio-poster" id="audioPoster" src="{{ d.poster }}">
             <img class="audio-img" id="audioImg" data-mediaId="0" src="images/audio-bg.gif">
             <div class="audio-style">
-                <audio id="player" preload="auto" controls="true" width="100%" style="width:100%;" title="{{ d.title }}">
+                <audio id="player" preload="auto" controls="true" width="100%" style="width:100%;" title="{{ d.title }}" controlslist="nodownload">
                     <source id="mediaSrc" data-id="{{ d.courseId }}" src="{{ d.src }}" type="audio/mp3">
                     <p class="no-support-tip">您的浏览器不支持 video 标签。</p>
                 </audio>
