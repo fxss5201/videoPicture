@@ -1,10 +1,5 @@
 $(function () {
-
-    // 屏幕分界值751px
-    var cutoffValue = 751;
-
-    // 屏幕适配(min-width: cutoffValue px)
-    if ($(window).width() > cutoffValue) {
+    if (!OS.phone) {
         $("html").css("font-size", "50px");
     }
 
