@@ -146,7 +146,6 @@ $(function () {
             handleOrientationChange(screenDirection);
         });
     }
-    
 
     // 切换视频/音频
     $("#mediaCatalog").on("click", "li", function() {
@@ -190,7 +189,11 @@ $(function () {
             allImgSrc = [];
         if(allImg.length > 0){
             for(var imgIndex = 0, imgLength = allImg.length; imgIndex < imgLength; imgIndex++){
-                allImgSrc.push(allImg[imgIndex].src);
+                var src = allImg[imgIndex].src;
+                if(src.indexOf("http://") === -1 && src.indexOf("https://") === -1){
+                    src = location.protocol + "//" + location.hostname + src;
+                }
+                allImgSrc.push(src);
             }
             allImg.on("click", function(event){
                 console.log(event.target.src)
