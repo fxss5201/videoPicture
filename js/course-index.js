@@ -89,6 +89,9 @@ $(function () {
                 $(".audio-mask-loading").hide();
             };
         }
+        if(navigator.userAgent.toLowerCase().indexOf('micromessenger') !== -1){
+            imgClickEvent();
+        }
         // updatePlayCount();
     }
     initMedia();
@@ -180,6 +183,24 @@ $(function () {
             $(".img-text-detail[data-id='" + courseId + "']").removeClass("hide").siblings().addClass("hide");
         }
     });
+
+    // 为图片增加点击事件
+    function imgClickEvent(){
+        var allImg = $(".img-text-detail").eq(modiaOrder).find('img'),
+            allImgSrc = [];
+        if(allImg.length > 0){
+            for(var imgIndex = 0, imgLength = allImg.length; imgIndex < imgLength; imgIndex++){
+                allImgSrc.push(allImg[imgIndex].src);
+            }
+            allImg.on("click", function(event){
+                console.log(event.target.src)
+                wx.previewImage({
+                    current: event.target.src, // 当前显示图片的http链接
+                    urls: allImgSrc // 需要预览的图片http链接列表
+                });
+            })
+        }
+    }
 
     // 生成二维码参数
     var optionQrcard = {
